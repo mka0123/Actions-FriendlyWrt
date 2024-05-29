@@ -17,7 +17,7 @@ EOL
 
 # {{ Add luci-app-poweroffdevice
 (cd friendlywrt/package && {
-    git clone https://github.com/sirpdboy/luci-app-poweroffdevice package/luci-app-poweroffdevice.git --depth 1
+    git clone https://github.com/sirpdboy/luci-app-poweroffdevice.git --depth 1
 })
 echo "CONFIG_PACKAGE_luci-app-poweroffdevice=y" >> configs/rockchip/01-nanopi
 # }}
