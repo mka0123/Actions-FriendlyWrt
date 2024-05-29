@@ -1,6 +1,5 @@
 on:
   workflow_dispatch:
-    types: started
 
 jobs:
   prepare_release:
