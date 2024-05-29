@@ -92,7 +92,7 @@ jobs:
 
         cd friendlywrt
         rm -rf feeds.conf.default
-        wget https://github.com/coolsnowwolf/lede/blob/master/feeds.conf.default
+        wget https://github.com/mka0123/Actions-FriendlyWrt/blob/master/feeds.conf.default
         cd ..
         
 
