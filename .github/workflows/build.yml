@@ -89,7 +89,11 @@ jobs:
         repo sync -c scripts/sd-fuse  --no-clone-bundle
         repo sync -c toolchain  --no-clone-bundle
         git clone https://github.com/openwrt/openwrt --depth 1 friendlywrt
-        (cd friendlywrt && rm feeds.conf.default && wget https://github.com/coolsnowwolf/lede/blob/master/feeds.conf.default)
+
+        cd friendlywrt
+        rm -rf feeds.conf.default
+        wget https://github.com/coolsnowwolf/lede/blob/master/feeds.conf.default
+        cd ..
         
 
     - name: Apply customizations
