@@ -1,27 +1,12 @@
 on:
   workflow_dispatch:
-    
+    types: started
+
 jobs:
   prepare_release:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     if: github.event.repository.owner.id == github.event.sender.id
     steps:
-
-    - name: Check Server Performance
-      run: |
-        echo "警告⚠"
-        echo "分配的服务器性能有限，若选择的插件过多，务必注意CPU性能！"
-        echo -e "已知CPU型号(降序): 7763，8370C，8272CL，8171M，E5-2673\n"
-        echo "--------------------------CPU信息--------------------------"
-        echo "CPU物理数量: $(cat /proc/cpuinfo | grep "physical id" | sort | uniq | wc -l)"
-        echo "CPU核心数量: $(nproc)"
-        echo -e "CPU型号信息:$(cat /proc/cpuinfo | grep -m1 name | awk -F: '{print $2}')\n"
-        echo "--------------------------内存信息--------------------------"
-        echo "已安装内存详细信息:"
-        echo -e "$(sudo lshw -short -C memory | grep GiB)\n"
-        echo "--------------------------硬盘信息--------------------------"
-        echo "硬盘数量: $(ls /dev/sd* | grep -v [1-9] | wc -l)" && df -hT
-        
     - name: Get release tag
       id: release_tag
       run: |
@@ -48,7 +33,7 @@ jobs:
     strategy:
       matrix:
         VERSION: [23.05]
-        SET: [non-docker]
+        SET: [docker, non-docker]
 
     steps:
     - name: Checkout
@@ -82,19 +67,13 @@ jobs:
         repo init --depth=1 -u https://github.com/friendlyarm/friendlywrt_manifests -b master-v${{ matrix.VERSION }} \
                 -m rk3328.xml --repo-url=https://github.com/friendlyarm/repo  --no-clone-bundle
 
+        repo sync -c friendlywrt --no-clone-bundle
         repo sync -c configs --no-clone-bundle
         repo sync -c device/common --no-clone-bundle
         repo sync -c device/friendlyelec --no-clone-bundle
         repo sync -c scripts --no-clone-bundle
         repo sync -c scripts/sd-fuse  --no-clone-bundle
         repo sync -c toolchain  --no-clone-bundle
-        git clone https://github.com/openwrt/openwrt --depth 1 friendlywrt
-
-        cd friendlywrt
-        rm -rf feeds.conf.default
-        wget https://github.com/mka0123/Actions-FriendlyWrt/blob/master/feeds.conf.default
-        cd ..
-        
 
     - name: Apply customizations
       run: |
@@ -158,14 +137,14 @@ jobs:
 
   build_img:
     needs: [prepare_release,build_friendlywrt]
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     if: github.event.repository.owner.id == github.event.sender.id
 
     strategy:
       matrix:
         VERSION: [23.05]
         CPU: [rk3328]
-        SET: [non-docker]
+        SET: [docker, non-docker]
     steps:
     - name: Checkout
       uses: actions/checkout@main
@@ -198,15 +177,16 @@ jobs:
         repo init --depth=1 -u https://github.com/friendlyarm/friendlywrt_manifests -b master-v${{ matrix.VERSION }} \
                 -m ${{ matrix.CPU }}.xml --repo-url=https://github.com/friendlyarm/repo  --no-clone-bundle
 
-        repo sync -c kernel --no-clone-bundle
         repo sync -c u-boot --no-clone-bundle
         repo sync -c rkbin --no-clone-bundle
         repo sync -c configs --no-clone-bundle
         repo sync -c device/common --no-clone-bundle
         repo sync -c device/friendlyelec --no-clone-bundle
         repo sync -c scripts --no-clone-bundle
-        repo sync -c scripts/sd-fuse  --no-clone-bundle
         repo sync -c toolchain  --no-clone-bundle
+        git clone https://github.com/friendlyarm/kernel-rockchip -b nanopi-r2-v5.15.y --depth 1 kernel
+        (cd scripts && git clone https://github.com/friendlyarm/sd-fuse_rk3328 -b kernel-5.15.y --depth 1 sd-fuse)
+        ln -s scripts/sd-fuse/out .
 
     - name: Download friendlywrt rootfs (non-docker)
       if: matrix.SET == 'non-docker'
@@ -235,6 +215,7 @@ jobs:
         case ${{ matrix.CPU }} in
         rk3328)
           MODEL=R2S-R2C-Series
+          ;;
         *)
           echo "unknow cpu"
           exit 1
