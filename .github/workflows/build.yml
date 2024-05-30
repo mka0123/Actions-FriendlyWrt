@@ -67,12 +67,15 @@ jobs:
                 -m rk3328.xml --repo-url=https://github.com/friendlyarm/repo  --no-clone-bundle
 
         repo sync -c friendlywrt --no-clone-bundle
-        repo sync -c configs --no-clone-bundle
         repo sync -c device/common --no-clone-bundle
         repo sync -c device/friendlyelec --no-clone-bundle
         repo sync -c scripts --no-clone-bundle
-        repo sync -c scripts/sd-fuse  --no-clone-bundle
         repo sync -c toolchain  --no-clone-bundle
+        git clone https://github.com/mka0123/friendlywrt_configs --depth 1 configs
+        (cd scripts && git clone https://github.com/mka0123/sd-fuse_rk3328.git -b kernel-6.1.y --depth 1 sd-fuse)
+        ln -s scripts/sd-fuse/out .
+#        repo sync -c configs --no-clone-bundle
+#        repo sync -c scripts/sd-fuse  --no-clone-bundle
 
     - name: Apply customizations
       run: |
@@ -179,17 +182,17 @@ jobs:
         repo sync -c toolchain  --no-clone-bundle
         repo sync -c u-boot --no-clone-bundle
         repo sync -c rkbin --no-clone-bundle
-        repo sync -c configs --no-clone-bundle
         repo sync -c device/common --no-clone-bundle
         repo sync -c device/friendlyelec --no-clone-bundle
         repo sync -c scripts --no-clone-bundle
-        
         repo sync -c kernel --no-clone-bundle
-        repo sync -c scripts/sd-fuse  --no-clone-bundle
-
+        git clone https://github.com/mka0123/friendlywrt_configs --depth 1 configs
+        (cd scripts && git clone https://github.com/mka0123/sd-fuse_rk3328.git -b kernel-6.1.y --depth 1 sd-fuse)
+        ln -s scripts/sd-fuse/out .
+#        repo sync -c configs --no-clone-bundle        
+#        repo sync -c scripts/sd-fuse  --no-clone-bundle
 #        git clone https://github.com/friendlyarm/kernel-rockchip -b nanopi-r2-v5.15.y --depth 1 kernel
-#        (cd scripts && git clone https://github.com/friendlyarm/sd-fuse_rk3328 -b kernel-5.15.y --depth 1 sd-fuse)
-#        ln -s scripts/sd-fuse/out .
+
 
     - name: Download friendlywrt rootfs (non-docker)
       if: matrix.SET == 'non-docker'
