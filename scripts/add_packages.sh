@@ -17,7 +17,7 @@ EOL
 
 # {{ Add luci-app-poweroff
 (cd friendlywrt/package && {
-    git clone https://github.com/esirplayground/luci-app-poweroff.git --depth 1
+    git clone https://github.com/mka0123/luci-app-poweroff.git --depth 1
 })
 echo "CONFIG_PACKAGE_luci-app-poweroff=y" >> configs/rockchip/01-nanopi
 # echo "CONFIG_PACKAGE_luci-i18n-poweroff-zh-cn=y" >> configs/rockchip/01-nanopi
