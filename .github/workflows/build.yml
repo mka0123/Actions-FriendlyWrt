@@ -255,6 +255,7 @@ jobs:
       id: build_sd_image
       run: |
         cd project
+        (cd device/common && rm -rf emmc-tools)
         ./build.sh sd-img
         mv out/${{ steps.config.outputs.img_filename }} ../artifact/
         cd ../artifact/
