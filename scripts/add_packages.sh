@@ -24,6 +24,7 @@ echo "CONFIG_PACKAGE_luci-app-poweroff=y" >> configs/rockchip/01-nanopi
 # }}
 
 (cd friendlywrt/package && {
-    git clone https://github.com/nikeshishui/dnqewuodno.git --depth 1 luci-app-ssr-plus
+    git clone --depth=1 -b main https://github.com/fw876/helloworld.git luci-app-ssr-plus
 })
 echo "CONFIG_PACKAGE_luci-app-ssr-plus=y" >> configs/rockchip/01-nanopi
+
