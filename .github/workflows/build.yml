@@ -38,7 +38,7 @@ jobs:
     if: github.event.repository.owner.id == github.event.sender.id
     strategy:
       matrix:
-        VERSION: [21.02]
+        VERSION: [22.03]
         SET: [docker]
 
     steps:
@@ -102,9 +102,6 @@ jobs:
         TARGET_FRIENDLYWRT_CONFIG=${CONFIG}
         EOL
         DEBUG_DOT_CONFIG=1 ./build.sh friendlywrt
-        rm -rf feeds/packages/lang/golang
-        svn co https://github.com/openwrt/packages/tree/openwrt-22.03/lang/golang/golang feeds/packages/lang/golang
-
      
     - name: Download package
       run: |
@@ -154,7 +151,7 @@ jobs:
 
     strategy:
       matrix:
-        VERSION: [21.02]
+        VERSION: [22.03]
         CPU: [rk3328]
         SET: [docker]
     steps:
