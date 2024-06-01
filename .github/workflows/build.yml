@@ -11,7 +11,7 @@ jobs:
     
     - name: Check Server Performance
       run: |
-        echo -e "CPU信息:$(cat /proc/cpuinfo | grep -m1 name | awk -F: '{print $2}')\n"
+        echo -e "CPU信息:$(cat /proc/cpuinfo | grep -m1 name | awk -F: '{print $2}')"
     
     - name: Get release tag
       id: release_tag
