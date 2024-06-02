@@ -1,5 +1,3 @@
-name: Actions FriendlyWrt (R2S)
-
 on:
   workflow_dispatch:
 
@@ -8,11 +6,6 @@ jobs:
     runs-on: ubuntu-20.04
     if: github.event.repository.owner.id == github.event.sender.id
     steps:
-    
-    - name: Check Server Performance
-      run: |
-        echo -e "CPU信息:$(cat /proc/cpuinfo | grep -m1 name | awk -F: '{print $2}')"
-    
     - name: Get release tag
       id: release_tag
       run: |
@@ -38,8 +31,8 @@ jobs:
     if: github.event.repository.owner.id == github.event.sender.id
     strategy:
       matrix:
-        VERSION: [23.05]
-        SET: [non-docker]
+        VERSION: [21.02]
+        SET: [docker]
 
     steps:
     - name: Checkout
@@ -73,7 +66,7 @@ jobs:
         repo init --depth=1 -u https://github.com/friendlyarm/friendlywrt_manifests -b master-v${{ matrix.VERSION }} \
                 -m rk3328.xml --repo-url=https://github.com/friendlyarm/repo  --no-clone-bundle
 
-        git clone https://github.com/openwrt/openwrt --depth 1 friendlywrt
+        repo sync -c friendlywrt --no-clone-bundle
         repo sync -c device/common --no-clone-bundle
         repo sync -c device/friendlyelec --no-clone-bundle
         repo sync -c scripts --no-clone-bundle
@@ -83,7 +76,6 @@ jobs:
         ln -s scripts/sd-fuse/out .
 #        repo sync -c configs --no-clone-bundle
 #        repo sync -c scripts/sd-fuse  --no-clone-bundle
-#        repo sync -c friendlywrt --no-clone-bundle
 
     - name: Apply customizations
       run: |
@@ -152,9 +144,9 @@ jobs:
 
     strategy:
       matrix:
-        VERSION: [23.05]
+        VERSION: [21.02]
         CPU: [rk3328]
-        SET: [non-docker]
+        SET: [docker]
     steps:
     - name: Checkout
       uses: actions/checkout@main
@@ -228,7 +220,7 @@ jobs:
         cd project
         case ${{ matrix.CPU }} in
         rk3328)
-          MODEL=R2S-R2C-Series
+          MODEL=R2S
           ;;
         *)
           echo "unknow cpu"
