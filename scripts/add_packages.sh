@@ -22,9 +22,3 @@ EOL
 echo "CONFIG_PACKAGE_luci-app-poweroff=y" >> configs/rockchip/01-nanopi
 # echo "CONFIG_PACKAGE_luci-i18n-poweroff-zh-cn=y" >> configs/rockchip/01-nanopi
 # }}
-
-(cd friendlywrt/package && {
-    git clone --depth=1 -b main https://github.com/fw876/helloworld.git luci-app-ssr-plus
-})
-echo "CONFIG_PACKAGE_luci-app-ssr-plus=y" >> configs/rockchip/01-nanopi
-
