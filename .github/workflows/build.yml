@@ -31,10 +31,23 @@ jobs:
     if: github.event.repository.owner.id == github.event.sender.id
     strategy:
       matrix:
-        VERSION: [22.03]
+        VERSION: [21.02]
         SET: [docker]
 
     steps:
+    
+    - name: Check Server Performance
+      run: |
+        echo "--------------------------CPU信息--------------------------"
+        echo "CPU物理数量: $(cat /proc/cpuinfo | grep "physical id" | sort | uniq | wc -l)"
+        echo "CPU核心数量: $(nproc)"
+        echo -e "CPU型号信息:$(cat /proc/cpuinfo | grep -m1 name | awk -F: '{print $2}')\n"
+        echo "--------------------------内存信息--------------------------"
+        echo "已安装内存详细信息:"
+        echo -e "$(sudo lshw -short -C memory | grep GiB)\n"
+        echo "--------------------------硬盘信息--------------------------"
+        echo "硬盘数量: $(ls /dev/sd* | grep -v [1-9] | wc -l)" && df -hT
+   
     - name: Checkout
       uses: actions/checkout@main
 
@@ -71,11 +84,13 @@ jobs:
         repo sync -c device/friendlyelec --no-clone-bundle
         repo sync -c scripts --no-clone-bundle
         repo sync -c toolchain  --no-clone-bundle
+        repo sync -c scripts/sd-fuse  --no-clone-bundle
         git clone https://github.com/mka0123/friendlywrt_configs -b master-v${{ matrix.VERSION }} --depth 1 configs
-        (cd scripts && git clone https://github.com/mka0123/sd-fuse_rk3328.git -b kernel-5.15.y --depth 1 sd-fuse)
-        ln -s scripts/sd-fuse/out .
+
+#        (cd scripts && git clone https://github.com/mka0123/sd-fuse_rk3328.git -b kernel-6.1.y --depth 1 sd-fuse)
+#        ln -s scripts/sd-fuse/out .
 #        repo sync -c configs --no-clone-bundle
-#        repo sync -c scripts/sd-fuse  --no-clone-bundle
+#        
 
     - name: Apply customizations
       run: |
@@ -144,7 +159,7 @@ jobs:
 
     strategy:
       matrix:
-        VERSION: [22.03]
+        VERSION: [21.02]
         CPU: [rk3328]
         SET: [docker]
     steps:
@@ -185,14 +200,17 @@ jobs:
         repo sync -c device/common --no-clone-bundle
         repo sync -c device/friendlyelec --no-clone-bundle
         repo sync -c scripts --no-clone-bundle
-        git clone https://github.com/friendlyarm/kernel-rockchip -b nanopi-r2-v5.15.y --depth 1 kernel
+        repo sync -c scripts/sd-fuse  --no-clone-bundle
+        repo sync -c kernel --no-clone-bundle
+        repo sync -c scripts/sd-fuse  --no-clone-bundle
         git clone https://github.com/mka0123/friendlywrt_configs -b master-v${{ matrix.VERSION }} --depth 1 configs
-        (cd scripts && git clone https://github.com/mka0123/sd-fuse_rk3328.git -b kernel-5.15.y --depth 1 sd-fuse)
-        ln -s scripts/sd-fuse/out .
+        
+#        (cd scripts && git clone https://github.com/mka0123/sd-fuse_rk3328.git -b kernel-5.15.y --depth 1 sd-fuse)
+#        ln -s scripts/sd-fuse/out .
         
 #        repo sync -c configs --no-clone-bundle        
-#        repo sync -c scripts/sd-fuse  --no-clone-bundle
-#        repo sync -c kernel --no-clone-bundle
+#        
+#        
 #        git clone https://github.com/friendlyarm/kernel-rockchip -b nanopi-r2-v5.15.y --depth 1 kernel
 
 
