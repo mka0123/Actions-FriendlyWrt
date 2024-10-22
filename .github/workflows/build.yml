@@ -45,7 +45,7 @@ jobs:
     if: github.event.repository.owner.id == github.event.sender.id
     strategy:
       matrix:
-        VERSION: [21.02, 23.05]
+        VERSION: [23.05]
         SET: [docker]
 
     steps:
@@ -161,7 +161,7 @@ jobs:
 
     strategy:
       matrix:
-        VERSION: [21.02, 23.05]
+        VERSION: [23.05]
         CPU: [rk3328]
         SET: [docker]
     steps:
