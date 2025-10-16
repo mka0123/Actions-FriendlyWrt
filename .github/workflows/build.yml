@@ -66,13 +66,22 @@ jobs:
                 -m rk3399.xml --repo-url=https://github.com/friendlyarm/repo  --no-clone-bundle
 
         repo sync -c friendlywrt --no-clone-bundle
-        repo sync -c configs --no-clone-bundle
         repo sync -c device/common --no-clone-bundle
         repo sync -c device/friendlyelec --no-clone-bundle
         repo sync -c scripts --no-clone-bundle
-        repo sync -c scripts/sd-fuse  --no-clone-bundle
         repo sync -c toolchain  --no-clone-bundle
+#       repo sync -c configs --no-clone-bundle
+#       repo sync -c scripts/sd-fuse  --no-clone-bundle
 
+    - name: User Configuration
+      run: |
+        cd project
+        git clone https://github.com/mka0123/friendlywrt_configs.git
+        mv friendlywrt_configs configs
+        cd scripts
+        git clone https://github.com/mka0123/sd-fuse_rk3328.git
+        mv sd-fuse_rk3328 sd-fuse
+        
     - name: Apply customizations
       run: |
         cd project
