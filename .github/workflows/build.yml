@@ -1,6 +1,8 @@
+name: r2s
+
 on:
-  watch:
-    types: started
+  workflow_dispatch:
+
 jobs:
   prepare_release:
     runs-on: ubuntu-22.04
