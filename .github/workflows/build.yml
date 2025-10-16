@@ -219,7 +219,7 @@ jobs:
         cd project
         case ${{ matrix.CPU }} in
         rk3328)
-          MODEL=R2S-R2C-Series
+          MODEL=R2S-Series
           ;;
         *)
           echo "unknow cpu"
@@ -260,13 +260,16 @@ jobs:
         #     ;;
         # esac
 
-    - name: Build sd image
-      id: build_sd_image
+    - name: Remove emmc-tools
       run: |
         cd project
         cd device/common/
         rm -rf emmc-tools
-        cd ../../
+
+    - name: Build sd image
+      id: build_sd_image
+      run: |
+        cd project
         ./build.sh sd-img
         mv out/${{ steps.config.outputs.img_filename }} ../artifact/
         cd ../artifact/
