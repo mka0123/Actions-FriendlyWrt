@@ -1,15 +1,11 @@
 #!/bin/bash
 
-# {{ Add luci-app-diskman
+# {{ Add luci-app-poweroff
 (cd friendlywrt && {
-    mkdir -p package/luci-app-diskman
-    wget https://raw.githubusercontent.com/lisaac/luci-app-diskman/master/applications/luci-app-diskman/Makefile.old -O package/luci-app-diskman/Makefile
+    mkdir -p package/luci-app-poweroff
+    git clone https://github.com/mka0123/luci-app-poweroff
 })
 cat >> configs/rockchip/01-nanopi <<EOL
-# CONFIG_PACKAGE_luci-app-diskman=y
-CONFIG_PACKAGE_luci-app-diskman_INCLUDE_btrfs_progs=y
-CONFIG_PACKAGE_luci-app-diskman_INCLUDE_lsblk=y
-CONFIG_PACKAGE_luci-i18n-diskman-zh-cn=y
-CONFIG_PACKAGE_smartmontools=y
+CONFIG_PACKAGE_luci-app-poweroff=y
 EOL
 # }}
