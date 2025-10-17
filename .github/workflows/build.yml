@@ -189,14 +189,17 @@ jobs:
         repo sync -c scripts --no-clone-bundle
         repo sync -c toolchain  --no-clone-bundle
         repo sync -c scripts/sd-fuse  --no-clone-bundle
+        repo sync -c kernel --no-clone-bundle
 #       repo sync -c configs --no-clone-bundle
-#       repo sync -c kernel --no-clone-bundle
+#       
 
     - name: User Configuration
       run: |
         cd project
         git clone https://github.com/mka0123/friendlywrt_configs.git --depth 1 configs
-        git clone https://github.com/friendlyarm/kernel-rockchip -b nanopi-r2-v6.1.y --depth 1 kernel
+#       git clone https://github.com/friendlyarm/kernel-rockchip -b nanopi-r2-v6.1.y --depth 1 kernel
+#       cd scripts
+#       git clone https://github.com/friendlyarm/sd-fuse_rk3328 -b kernel-6.1.y --depth 1 sd-fuse
 
     - name: Download friendlywrt rootfs (docker)
       if: matrix.SET == 'docker'
